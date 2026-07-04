@@ -13,8 +13,10 @@ public class User : BaseEntity
     public Money Balance { get; protected set; } = Money.Zero;
     private List<Transaction> _transactions = new();
     private List<InventoryItem> _inventoryItems = new();
+    private List<SaleItem> _saleHistory = new();
     public IReadOnlyCollection<Transaction> Transactions => _transactions.AsReadOnly();
-    public IReadOnlyCollection<InventoryItem> InvetoryItems => _inventoryItems.AsReadOnly();
+    public IReadOnlyCollection<InventoryItem> InventoryItems => _inventoryItems.AsReadOnly();
+    public IReadOnlyCollection<SaleItem> SaleHistory => _saleHistory.AsReadOnly();
 
     public User(string username, string passwordHash, string email)
     {
@@ -46,6 +48,14 @@ public class User : BaseEntity
             throw new InsufficientBalanceException(Balance.Amount, amount.Amount);
         _transactions.Add(new Transaction(Id, Balance, amount, TransactionType.CaseOpen));
         Balance -= amount;
+    }
+
+    public void SellItem(InventoryItem item)
+    {
+        _saleHistory.Add(new SaleRecord(Id, item.CaseItem.Id, item.CaseItem.Price));
+        _transactions.Add(new Transaction(Id, Balance, item.CaseItem.Price, TransactionType.Sale));
+        Balance += item.CaseItem.Price;
+        _inventoryItems.Remove(item);
     }
     
     public void AddInventoryItem(InventoryItem inventoryItem)

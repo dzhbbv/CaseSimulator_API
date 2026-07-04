@@ -20,6 +20,7 @@ public class Transaction
         BalanceAfter = type switch
         {
             TransactionType.Deposit => balance + amount,
+            TransactionType.Sale => balance + amount,
             TransactionType.CaseOpen => balance - amount,
             TransactionType.Withdraw => balance - amount,
             _ => throw new ArgumentException("Unknown transaction type")
