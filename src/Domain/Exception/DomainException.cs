@@ -1,6 +1,6 @@
 namespace CaseSimulator.Domain.Exception;
 
-public class DomainException
+public abstract class DomainException : System.Exception
 {
-    
+    protected DomainException(string message) : base(message) { }
 }
