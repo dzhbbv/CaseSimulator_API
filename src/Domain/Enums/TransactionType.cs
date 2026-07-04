@@ -1,6 +1,3 @@
 namespace CaseSimulator.Domain.Enums;
 
-public class TransactionType
-{
-    
-}
+public enum TransactionType { Deposit, CaseOpen, Withdraw };
