@@ -52,7 +52,7 @@ public class User : BaseEntity
 
     public void SellItem(InventoryItem item)
     {
-        _saleHistory.Add(new SaleRecord(Id, item.CaseItem.Id, item.CaseItem.Price));
+        _saleHistory.Add(new SaleItem(Id, item.CaseItem.Id, item.CaseItem.Price));
         _transactions.Add(new Transaction(Id, Balance, item.CaseItem.Price, TransactionType.Sale));
         Balance += item.CaseItem.Price;
         _inventoryItems.Remove(item);
