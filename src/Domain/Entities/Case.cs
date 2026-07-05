@@ -24,6 +24,6 @@ public class Case : BaseEntity
     {
         if (_caseContent.Any(c => c.CaseItemId == item.Id))
             throw new System.Exception("Item is already present");
-        _caseContent.Add(new CaseContent(Id, item.Id, dropChance));
+        _caseContent.Add(new CaseContent(Id, item.Id, item, dropChance));
     }
 }
