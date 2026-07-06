@@ -20,7 +20,7 @@ public class OpenCaseCommandHandler(IApplicationDbContext dbContext, ICurrentUse
         user.SpendOnCase(caseEntity.Price);
         var caseItem = caseOpeningService.OpenCase(caseEntity);
         user.AddInventoryItem(new InventoryItem(user.Id, caseItem.Id, caseItem));
-        await dbContext.SaveChangesAsync(cancellationToken);
+        await dbContext.SaveChangesAsync();
         return caseItem.Id;
     }
 }

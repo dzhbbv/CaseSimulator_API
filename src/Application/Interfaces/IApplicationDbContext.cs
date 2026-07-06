@@ -9,6 +9,7 @@ public interface IApplicationDbContext
     DbSet<CaseItem> CaseItems { get; }
     DbSet<InventoryItem> InventoryItems { get; }
     DbSet<Transaction> Transactions { get; }
+    DbSet<SaleItem> SaleItems { get; }
     
-    Task SaveChangesAsync(CancellationToken cancellationToken);
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

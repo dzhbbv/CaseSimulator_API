@@ -1,8 +1,9 @@
+using CaseSimulator.Domain.Common;
 using CaseSimulator.Domain.ValueObjects;
 
 namespace CaseSimulator.Domain.Entities;
 
-public class SaleItem
+public class SaleItem : BaseEntity
 {
     public Guid UserId { get; protected set; }
     public Guid CaseItemId { get; protected set; }

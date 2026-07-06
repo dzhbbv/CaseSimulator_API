@@ -1,16 +1,17 @@
+using CaseSimulator.Domain.Common;
 using CaseSimulator.Domain.Enums;
 using CaseSimulator.Domain.ValueObjects;
 
 namespace CaseSimulator.Domain.Entities;
 
-public class Transaction
+public class Transaction : BaseEntity
 {
     public Guid UserId { get; protected set; }
     public Money CurrentBalance { get; protected set; }
     public Money Amount { get; protected set; }
     public TransactionType Type { get; protected set; }
     public Money BalanceAfter { get; protected set; }
-    
+
     public Transaction(Guid userId, Money balance, Money amount, TransactionType type)
     {
         UserId = userId;

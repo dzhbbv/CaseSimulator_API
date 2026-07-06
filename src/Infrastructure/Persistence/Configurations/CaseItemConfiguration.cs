@@ -1,14 +1,15 @@
 using CaseSimulator.Domain.Entities;
+using CaseSimulator.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CaseSimulator.Infrastructure.Persistence.Configurations;
 
-public class CaseConfiguration : IEntityTypeConfiguration<Case>
+public class CaseItemConfiguration : IEntityTypeConfiguration<CaseItem>
 {
-    public void Configure(EntityTypeBuilder<Case> builder)
+    public void Configure(EntityTypeBuilder<CaseItem> builder)
     {
-        builder.ToTable("Cases");
+        builder.ToTable("CaseItems");
         
         builder.HasKey(x => x.Id);
         
@@ -22,8 +23,10 @@ public class CaseConfiguration : IEntityTypeConfiguration<Case>
                 .IsRequired();
         });
         
-        builder.HasMany(x => x.CaseContent).WithOne()
-            .HasForeignKey(x => x.CaseId).OnDelete(DeleteBehavior.Cascade);
+        builder.Property(x => x.Rarity)
+            .HasConversion<string>(
+                x => x.Name,
+                dbValue => Rarity.FromName(dbValue));
         
         builder.HasIndex(x => x.Name).IsUnique();
     }
