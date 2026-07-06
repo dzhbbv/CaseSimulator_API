@@ -14,7 +14,7 @@ public class CaseItem : BaseEntity
     {
         ArgumentNullException.ThrowIfNull(name);
         ArgumentNullException.ThrowIfNull(imageUrl);
-        Name = name;
+        Name = name.Trim().ToLowerInvariant();
         ImageUrl = imageUrl;
         Rarity = rarity;
         Price = price;

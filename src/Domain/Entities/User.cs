@@ -23,9 +23,9 @@ public class User : BaseEntity
         if (string.IsNullOrWhiteSpace(username)) throw new ArgumentNullException(nameof(username));
         if (string.IsNullOrWhiteSpace(passwordHash)) throw new ArgumentNullException(nameof(passwordHash));
         if (string.IsNullOrWhiteSpace(email)) throw new ArgumentNullException(nameof(email));
-        Username = username;
+        Username = username.Trim().ToLowerInvariant();
         PasswordHash = passwordHash;
-        Email = email;
+        Email = email.Trim().ToLowerInvariant();
     }
 
     public void Deposit(Money amount)

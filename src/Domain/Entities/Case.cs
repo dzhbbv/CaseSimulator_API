@@ -15,7 +15,7 @@ public class Case : BaseEntity
     {
         ArgumentNullException.ThrowIfNull(name);
         ArgumentNullException.ThrowIfNull(imageUrl);
-        Name = name;
+        Name = name.Trim().ToLowerInvariant();
         ImageUrl = imageUrl;
         Price = price;
     }
