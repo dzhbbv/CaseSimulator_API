@@ -10,9 +10,7 @@ namespace CaseSimulator.Infrastructure;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddInfrastructure(
-        this IServiceCollection services,
-        IConfiguration configuration)
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseNpgsql(
@@ -22,7 +20,9 @@ public static class DependencyInjection
             provider => provider.GetRequiredService<ApplicationDbContext>());
 
         services.AddScoped<ICaseOpeningService, CaseOpeningService>();
-
+        
+        services.AddScoped<IPasswordService, BCryptPasswordService>();
+        
         services.AddScoped<IJwtTokenService, JwtTokenService>();
 
         services.AddHttpContextAccessor();
