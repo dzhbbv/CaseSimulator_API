@@ -10,6 +10,7 @@ public interface IApplicationDbContext
     DbSet<InventoryItem> InventoryItems { get; }
     DbSet<Transaction> Transactions { get; }
     DbSet<SaleItem> SaleItems { get; }
+    DbSet<ProvablyFairRound> ProvablyFairRounds { get; }
     
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

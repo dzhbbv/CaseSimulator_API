@@ -18,9 +18,10 @@ public class OpenCaseCommandHandler(IApplicationDbContext dbContext, ICurrentUse
         if (caseEntity is null)
             throw new Exception("Case not found");
         user.SpendOnCase(caseEntity.Price);
-        var caseItem = caseOpeningService.OpenCase(caseEntity);
-        user.AddInventoryItem(new InventoryItem(user.Id, caseItem.Id, caseItem));
-        await dbContext.SaveChangesAsync();
-        return caseItem.Id;
+        var result = caseOpeningService.OpenCase(caseEntity, user);
+        user.AddInventoryItem(new InventoryItem(user.Id, result.CaseItem.Id, result.CaseItem));
+        dbContext.ProvablyFairRounds.Add(result.Round);
+        await dbContext.SaveChangesAsync(cancellationToken);
+        return result.CaseItem.Id;
     }
 }
