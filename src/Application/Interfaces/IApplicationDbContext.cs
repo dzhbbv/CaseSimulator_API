@@ -11,6 +11,7 @@ public interface IApplicationDbContext
     DbSet<Transaction> Transactions { get; }
     DbSet<SaleItem> SaleItems { get; }
     DbSet<ProvablyFairRound> ProvablyFairRounds { get; }
+    DbSet<RefreshToken> RefreshTokens { get; }
     
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }
