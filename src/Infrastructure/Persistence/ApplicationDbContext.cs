@@ -13,6 +13,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<Transaction> Transactions => Set<Transaction>();
     public DbSet<SaleItem> SaleItems => Set<SaleItem>();
     public DbSet<ProvablyFairRound> ProvablyFairRounds => Set<ProvablyFairRound>();
+    public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
