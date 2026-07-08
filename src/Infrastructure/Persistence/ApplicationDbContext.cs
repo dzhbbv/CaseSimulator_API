@@ -12,6 +12,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<InventoryItem> InventoryItems => Set<InventoryItem>();
     public DbSet<Transaction> Transactions => Set<Transaction>();
     public DbSet<SaleItem> SaleItems => Set<SaleItem>();
+    public DbSet<ProvablyFairRound> ProvablyFairRounds => Set<ProvablyFairRound>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

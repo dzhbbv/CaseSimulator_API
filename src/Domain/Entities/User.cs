@@ -11,6 +11,12 @@ public class User : BaseEntity
     public string PasswordHash { get; protected set; }
     public string Email { get; protected set; }
     public Money Balance { get; protected set; } = Money.Zero;
+    
+    public string ClientSeed { get; protected set; }
+    public string CurrentServerSeed { get; protected set; }
+    public string CurrentServerSeedHash { get; protected set; }
+    public int CurrentNonce { get; protected set; } = 0;
+    
     private List<Transaction> _transactions = new();
     private List<InventoryItem> _inventoryItems = new();
     private List<SaleItem> _saleHistory = new();
@@ -18,14 +24,22 @@ public class User : BaseEntity
     public IReadOnlyCollection<InventoryItem> InventoryItems => _inventoryItems.AsReadOnly();
     public IReadOnlyCollection<SaleItem> SaleHistory => _saleHistory.AsReadOnly();
 
-    public User(string username, string passwordHash, string email)
+    public void IncrementNonce() => CurrentNonce++;
+    
+    public User(string username, string passwordHash, string email, string clientSeed, string serverSeed, string serverSeedHash)
     {
         if (string.IsNullOrWhiteSpace(username)) throw new ArgumentNullException(nameof(username));
         if (string.IsNullOrWhiteSpace(passwordHash)) throw new ArgumentNullException(nameof(passwordHash));
         if (string.IsNullOrWhiteSpace(email)) throw new ArgumentNullException(nameof(email));
+        if (string.IsNullOrWhiteSpace(clientSeed)) throw new ArgumentNullException(nameof(clientSeed));
+        if (string.IsNullOrWhiteSpace(serverSeedHash)) throw new ArgumentNullException(nameof(serverSeedHash));
+        if (string.IsNullOrWhiteSpace(serverSeed)) throw new ArgumentNullException(nameof(serverSeed));
         Username = username.Trim().ToLowerInvariant();
         PasswordHash = passwordHash;
         Email = email.Trim().ToLowerInvariant();
+        ClientSeed = clientSeed;
+        CurrentServerSeed = serverSeed;
+        CurrentServerSeedHash = serverSeedHash;
     }
 
     public void Deposit(Money amount)
