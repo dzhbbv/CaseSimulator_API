@@ -1,5 +1,4 @@
 using CaseSimulator.Application.Interfaces;
-using CaseSimulator.Domain.Exception;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
