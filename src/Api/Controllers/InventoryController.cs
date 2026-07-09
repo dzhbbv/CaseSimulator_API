@@ -14,7 +14,7 @@ namespace CaseSimulator.Api.Controllers;
 public class InventoryController(IMediator mediator) : ControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> GetInventory([FromBody] Guid id, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetInventory([FromRoute] Guid id, CancellationToken cancellationToken)
     {
         var inventory = await mediator.Send(new GetUserInventoryQuery(), cancellationToken);
         return Ok(inventory);

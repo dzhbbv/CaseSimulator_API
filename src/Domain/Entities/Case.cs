@@ -26,7 +26,21 @@ public class Case : BaseEntity
     public void AddItem(CaseItem item, decimal dropChance)
     {
         if (_caseContent.Any(c => c.CaseItemId == item.Id))
-            throw new AlreadyExistingException("Item is already present");
+            throw new AlreadyExistingException("Item is already present in this case.");
+        
+        decimal currentTotalChance = _caseContent.Sum(c => c.DropChance);
+    
+        if (currentTotalChance + dropChance > 1.0m)
+        {
+            throw new InvalidCaseConfigurationException();
+        }
+
         _caseContent.Add(new CaseContent(Id, item.Id, item, dropChance));
+    }
+    
+    public bool IsConfiguredCorrectly()
+    {
+        if (!_caseContent.Any()) return false;
+        return _caseContent.Sum(c => c.DropChance) == 1.0m;
     }
 }

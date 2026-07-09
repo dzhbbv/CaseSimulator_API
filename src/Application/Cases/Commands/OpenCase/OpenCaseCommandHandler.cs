@@ -1,5 +1,6 @@
 using CaseSimulator.Application.Interfaces;
 using CaseSimulator.Domain.Entities;
+using CaseSimulator.Domain.Exception;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,11 +23,14 @@ public class OpenCaseCommandHandler(
             .ThenInclude(cc => cc.CaseItem)
             .FirstOrDefaultAsync(c => c.Id == request.CaseId, cancellationToken);
 
-        if (user is null) throw new Exception("User not found");
-        if (caseEntity is null) throw new Exception("Case not found");
-
+        if (user is null) throw new NotFoundException("User not found");
+        if (caseEntity is null) throw new NotFoundException("Case not found");
+        
+        if (!caseEntity.IsConfiguredCorrectly())
+            throw new InvalidCaseConfigurationException();
+        
         user.SpendOnCase(caseEntity.Price);
-
+        
         var result = caseOpeningService.OpenCase(caseEntity, user);
 
         var newInventoryItem = new InventoryItem(user.Id, result.CaseItem.Id, result.CaseItem);

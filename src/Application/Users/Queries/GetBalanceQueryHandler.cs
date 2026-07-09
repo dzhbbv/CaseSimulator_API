@@ -15,7 +15,7 @@ public class GetBalanceQueryHandler(
             .FirstOrDefaultAsync(u => u.Id == currentUserService.UserId, cancellationToken);
 
         if (user is null)
-            throw new InvalidCredentialsException();
+            throw new NotFoundException("User session is invalid or user not found");
 
         return user.Balance.Amount;
     }

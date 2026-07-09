@@ -1,4 +1,5 @@
 using CaseSimulator.Application.Interfaces;
+using CaseSimulator.Domain.Exception; // Предполагается наличие NotFoundException : DomainException
 using Microsoft.EntityFrameworkCore;
 using MediatR;
 
@@ -12,8 +13,10 @@ public class GetCaseByIdQueryHandler(IApplicationDbContext dbContext) : IRequest
             .Include(c => c.CaseContent)
             .ThenInclude(cc => cc.CaseItem)
             .FirstOrDefaultAsync(c => c.Id == request.CaseId, cancellationToken);
+            
         if (caseEntity == null)
-            throw new Exception("Case not found");
+            throw new NotFoundException($"Case with ID {request.CaseId} was not found");
+            
         return new CaseDetailDto(caseEntity);
     }
 }

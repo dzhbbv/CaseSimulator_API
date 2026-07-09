@@ -1,16 +1,17 @@
-using CaseSimulator.Application.Interfaces;
-using CaseSimulator.Application.Common.Models;
-using CaseSimulator.Domain.Entities;
 using System.Security.Cryptography;
 using System.Text;
+using CaseSimulator.Application.Common.Models;
+using CaseSimulator.Application.Interfaces;
+using CaseSimulator.Domain.Entities;
 using CaseSimulator.Domain.Exception;
-
-namespace CaseSimulator.Infrastructure.Services;
 
 public class CaseOpeningService : ICaseOpeningService
 {
     public OpenCaseResult OpenCase(Case caseEntity, User user)
     {
+        if (!caseEntity.IsConfiguredCorrectly())
+            throw new InvalidCaseConfigurationException();
+
         var serverSeed = user.CurrentServerSeed;
         var clientSeed = user.ClientSeed;
         var nonce = user.CurrentNonce;
@@ -40,6 +41,7 @@ public class CaseOpeningService : ICaseOpeningService
                 return new OpenCaseResult(item.CaseItem, round);
             }
         }
+        
         throw new InvalidCaseConfigurationException();
     }
 }

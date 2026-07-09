@@ -1,4 +1,5 @@
 using CaseSimulator.Application.Interfaces;
+using CaseSimulator.Domain.Exception;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,13 +13,18 @@ public class AddItemToCaseCommandHandler(IApplicationDbContext dbContext)
         var caseEntity = await dbContext.Cases
                              .Include(c => c.CaseContent)
                              .FirstOrDefaultAsync(c => c.Id == request.CaseId, cancellationToken)
-                         ?? throw new Exception("Case not found");
+                         ?? throw new NotFoundException("Case not found");
 
         var item = await dbContext.CaseItems
                        .FirstOrDefaultAsync(i => i.Id == request.CaseItemId, cancellationToken)
-                   ?? throw new Exception("Item not found");
+                   ?? throw new NotFoundException("Item not found");
 
         caseEntity.AddItem(item, request.DropChance);
+        
+        var newContentItem = caseEntity.CaseContent.Last();
+
+        await dbContext.CaseContents.AddAsync(newContentItem, cancellationToken);
+        
         await dbContext.SaveChangesAsync(cancellationToken);
     }
 }
