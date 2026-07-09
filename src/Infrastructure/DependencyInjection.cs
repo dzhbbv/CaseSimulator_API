@@ -24,6 +24,8 @@ public static class DependencyInjection
         services.AddScoped<IPasswordService, BCryptPasswordService>();
         
         services.AddScoped<IJwtTokenService, JwtTokenService>();
+        
+        services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
 
         services.AddHttpContextAccessor();
 
