@@ -13,6 +13,8 @@ public class OpenCaseCommandHandler(
     public async Task<Guid> Handle(OpenCaseCommand request, CancellationToken cancellationToken)
     {
         var user = await dbContext.Users
+            .Include(u => u.InventoryItems)
+            .Include(u => u.Transactions)
             .FirstOrDefaultAsync(u => u.Id == currentUserService.UserId, cancellationToken);
         
         var caseEntity = await dbContext.Cases
@@ -20,18 +22,22 @@ public class OpenCaseCommandHandler(
             .ThenInclude(cc => cc.CaseItem)
             .FirstOrDefaultAsync(c => c.Id == request.CaseId, cancellationToken);
 
-        if (user is null)
-            throw new Exception("User not found");
-        if (caseEntity is null)
-            throw new Exception("Case not found");
+        if (user is null) throw new Exception("User not found");
+        if (caseEntity is null) throw new Exception("Case not found");
 
         user.SpendOnCase(caseEntity.Price);
 
         var result = caseOpeningService.OpenCase(caseEntity, user);
 
-        user.AddInventoryItem(new InventoryItem(user.Id, result.CaseItem.Id, result.CaseItem));
+        var newInventoryItem = new InventoryItem(user.Id, result.CaseItem.Id, result.CaseItem);
+        user.AddInventoryItem(newInventoryItem);
 
+        var newTransaction = user.Transactions.Last(); 
+        
         await dbContext.ProvablyFairRounds.AddAsync(result.Round, cancellationToken);
+        await dbContext.InventoryItems.AddAsync(newInventoryItem, cancellationToken);
+        await dbContext.Transactions.AddAsync(newTransaction, cancellationToken);
+
         await dbContext.SaveChangesAsync(cancellationToken);
 
         return result.CaseItem.Id;

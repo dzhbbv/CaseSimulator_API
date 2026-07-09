@@ -14,7 +14,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     public DbSet<SaleItem> SaleItems => Set<SaleItem>();
     public DbSet<ProvablyFairRound> ProvablyFairRounds => Set<ProvablyFairRound>();
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
-
+    public DbSet<CaseContent> CaseContents => Set<CaseContent>();
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);

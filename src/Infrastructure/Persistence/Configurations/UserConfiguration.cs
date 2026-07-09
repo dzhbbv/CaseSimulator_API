@@ -65,5 +65,14 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.HasIndex(x => x.Email)
             .IsUnique();
+        
+        builder.Navigation(x => x.InventoryItems)
+            .UsePropertyAccessMode(PropertyAccessMode.Field);
+
+        builder.Navigation(x => x.Transactions)
+            .UsePropertyAccessMode(PropertyAccessMode.Field);
+
+        builder.Navigation(x => x.SaleHistory)
+            .UsePropertyAccessMode(PropertyAccessMode.Field);
     }
 }

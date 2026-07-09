@@ -17,9 +17,9 @@ public class Transaction : BaseEntity
     public Transaction(Guid userId, Money balance, Money amount, TransactionType type)
     {
         UserId = userId;
-        Amount = amount;
+        Amount = new Money(amount.Amount);
         Type = type;
-        CurrentBalance = balance;
+        CurrentBalance = new Money(balance.Amount);
         BalanceAfter = type switch
         {
             TransactionType.Deposit => balance + amount,

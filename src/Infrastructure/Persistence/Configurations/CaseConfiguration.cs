@@ -24,6 +24,8 @@ public class CaseConfiguration : IEntityTypeConfiguration<Case>
         
         builder.HasMany(x => x.CaseContent).WithOne()
             .HasForeignKey(x => x.CaseId).OnDelete(DeleteBehavior.Cascade);
+        builder.Navigation(x => x.CaseContent)
+            .UsePropertyAccessMode(PropertyAccessMode.Field);
         
         builder.HasIndex(x => x.Name).IsUnique();
     }

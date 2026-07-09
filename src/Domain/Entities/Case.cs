@@ -1,4 +1,5 @@
 using CaseSimulator.Domain.Common;
+using CaseSimulator.Domain.Exception;
 using CaseSimulator.Domain.ValueObjects;
 
 namespace CaseSimulator.Domain.Entities;
@@ -25,7 +26,7 @@ public class Case : BaseEntity
     public void AddItem(CaseItem item, decimal dropChance)
     {
         if (_caseContent.Any(c => c.CaseItemId == item.Id))
-            throw new System.Exception("Item is already present");
+            throw new AlreadyExistingException("Item is already present");
         _caseContent.Add(new CaseContent(Id, item.Id, item, dropChance));
     }
 }

@@ -1,5 +1,7 @@
 using CaseSimulator.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+
 namespace CaseSimulator.Application.Interfaces;
 
 public interface IApplicationDbContext
@@ -12,6 +14,7 @@ public interface IApplicationDbContext
     DbSet<SaleItem> SaleItems { get; }
     DbSet<ProvablyFairRound> ProvablyFairRounds { get; }
     DbSet<RefreshToken> RefreshTokens { get; }
+    DbSet<CaseContent> CaseContents { get; }
     
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }
