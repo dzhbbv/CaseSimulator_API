@@ -25,8 +25,13 @@ public class User : BaseEntity
     public IReadOnlyCollection<SaleItem> SaleHistory => _saleHistory.AsReadOnly();
 
     public void IncrementNonce() => CurrentNonce++;
-    
-    private User() { }
+
+    private User()
+    {
+        _transactions = new List<Transaction>();
+        _inventoryItems = new List<InventoryItem>();
+        _saleHistory = new List<SaleItem>();
+    }
     
     public User(string username, string passwordHash, string email, string clientSeed, string serverSeed, string serverSeedHash)
     {
