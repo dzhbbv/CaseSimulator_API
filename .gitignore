@@ -4,3 +4,4 @@ obj/
 .vs/
 .idea/
 *.swp
+src/Api/appsettings.Development.json
