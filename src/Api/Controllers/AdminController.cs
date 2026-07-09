@@ -14,6 +14,30 @@ public class AdminController(IMediator mediator, IConfiguration configuration) :
         return key == configuration["AdminSettings:SecretKey"];
     }
 
+    [HttpDelete("cases/{id}")]
+    public async Task<IActionResult> DeleteCase([FromRoute] Guid id, CancellationToken cancellationToken)
+    {
+        if (!IsAdmin()) return Forbid();
+        await mediator.Send(new DeleteCaseCommand(id), cancellationToken);
+        return NoContent();
+    }
+
+    [HttpDelete("items/{id}")]
+    public async Task<IActionResult> DeleteCaseItem([FromRoute] Guid id, CancellationToken cancellationToken)
+    {
+        if (!IsAdmin()) return Forbid();
+        await mediator.Send(new DeleteCaseItemCommand(id), cancellationToken);
+        return NoContent();
+    }
+
+    [HttpDelete("users/{id}")]
+    public async Task<IActionResult> DeleteUser([FromRoute] Guid id, CancellationToken cancellationToken)
+    {
+        if (!IsAdmin()) return Forbid();
+        await mediator.Send(new DeleteUserCommand(id), cancellationToken);
+        return NoContent();
+    }
+    
     [HttpPost("items")]
     public async Task<IActionResult> CreateItem(
         [FromBody] CreateCaseItemCommand command,
