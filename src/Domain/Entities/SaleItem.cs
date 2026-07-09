@@ -10,6 +10,8 @@ public class SaleItem : BaseEntity
     public Money Price { get; protected set; }
     public DateTime SoldDate { get; protected set; } =  DateTime.UtcNow;
 
+    private SaleItem() { }
+    
     public SaleItem(Guid userId, Guid caseItemId, Money price)
     {
         UserId = userId;

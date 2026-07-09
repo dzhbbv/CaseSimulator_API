@@ -10,7 +10,9 @@ public class Case : BaseEntity
     public string ImageUrl { get; protected set; }
     private List<CaseContent> _caseContent = new();
     public IReadOnlyCollection<CaseContent> CaseContent => _caseContent.AsReadOnly();
-
+    
+    private Case() { }
+    
     public Case(string name, string imageUrl, Money price)
     {
         ArgumentNullException.ThrowIfNull(name);

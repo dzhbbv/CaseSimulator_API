@@ -10,6 +10,8 @@ public class CaseItem : BaseEntity
     public Money Price { get; protected set; }
     public string ImageUrl { get; protected set; }
 
+    private CaseItem() { }
+    
     public CaseItem(string name, string imageUrl, Rarity rarity, Money price)
     {
         ArgumentNullException.ThrowIfNull(name);

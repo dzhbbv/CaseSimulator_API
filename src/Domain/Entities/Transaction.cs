@@ -12,6 +12,8 @@ public class Transaction : BaseEntity
     public TransactionType Type { get; protected set; }
     public Money BalanceAfter { get; protected set; }
 
+    private Transaction() { }
+    
     public Transaction(Guid userId, Money balance, Money amount, TransactionType type)
     {
         UserId = userId;

@@ -8,6 +8,8 @@ public class InventoryItem : BaseEntity
     public Guid CaseItemId { get; protected set; }
     public CaseItem CaseItem { get; protected set; }
 
+    private InventoryItem() { }
+    
     public InventoryItem(Guid userId, Guid caseItemId, CaseItem caseItem)
     {
         UserId = userId;

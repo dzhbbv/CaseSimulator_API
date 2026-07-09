@@ -9,6 +9,8 @@ public class CaseContent : BaseEntity
     public CaseItem CaseItem { get; protected set; }
     public decimal DropChance { get; protected set; }
 
+    private CaseContent() { }
+    
     public CaseContent(Guid caseId, Guid itemId, CaseItem caseItem, decimal dropChance)
     {
         if (dropChance <= 0 || dropChance > 1)

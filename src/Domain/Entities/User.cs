@@ -26,6 +26,8 @@ public class User : BaseEntity
 
     public void IncrementNonce() => CurrentNonce++;
     
+    private User() { }
+    
     public User(string username, string passwordHash, string email, string clientSeed, string serverSeed, string serverSeedHash)
     {
         if (string.IsNullOrWhiteSpace(username)) throw new ArgumentNullException(nameof(username));
