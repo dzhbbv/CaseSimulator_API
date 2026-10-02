@@ -17,6 +17,6 @@
     <Project Path="tests/IntegrationTests/CaseSimulator.IntegrationTests.csproj" />
   </Folder>
   <Folder Name="/tests/UnitTests/">
-    <Project Path="tests/UnitTests/CaseSimulator.UnitTests.csproj" />
+    <Project Path="tests\CaseSimulator.UnitTests\CaseSimulator.UnitTests.csproj" />
   </Folder>
 </Solution>

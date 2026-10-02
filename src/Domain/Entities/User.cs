@@ -10,7 +10,7 @@ public class User : BaseEntity
     public string Username { get; protected set; }
     public string PasswordHash { get; protected set; }
     public string Email { get; protected set; }
-    public Money Balance { get; protected set; } = new Money(100);
+    public Money Balance { get; protected set; } = Money.Zero;
     
     public string ClientSeed { get; protected set; }
     public string CurrentServerSeed { get; protected set; }
