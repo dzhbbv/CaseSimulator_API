@@ -4,7 +4,7 @@ using CaseSimulator.Domain.Entities;
 using CaseSimulator.Domain.Exception;
 using CaseSimulator.Domain.ValueObjects;
 
-namespace CaseSimulator.UnitTests;
+namespace CaseSimulator.UnitTests.Domain;
 
 public class CaseTests
 {
@@ -77,16 +77,6 @@ public class CaseTests
             new CaseItem("testitem3", "testurl3", Rarity.Epic, new Money(500)), 0.1m);
         
         caseEntity.CaseContent.Count.Should().Be(3);
-    }
-    
-    [Fact]
-    public void Case_WhenAddedItem_ShouldContainOneItem()
-    {
-        var caseEntity = CreateCase();
-        caseEntity.AddItem(
-            new CaseItem("testitem", "testurl", Rarity.Rare, new Money(50)), 0.5m);
-        
-        caseEntity.CaseContent.Count.Should().Be(1);
     }
     
     [Fact]

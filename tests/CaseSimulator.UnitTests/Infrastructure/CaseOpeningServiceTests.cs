@@ -4,7 +4,7 @@ using CaseSimulator.Infrastructure.Services;
 using Xunit;
 using FluentAssertions;
 
-namespace CaseSimulator.UnitTests;
+namespace CaseSimulator.UnitTests.Infrastructure;
 
 public class CaseOpeningServiceTests
 {

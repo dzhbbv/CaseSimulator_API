@@ -2,7 +2,7 @@ using CaseSimulator.Domain.ValueObjects;
 using Xunit;
 using FluentAssertions;
 
-namespace CaseSimulator.UnitTests;
+namespace CaseSimulator.UnitTests.Domain;
 
 public class MoneyTests
 {

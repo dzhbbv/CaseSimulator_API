@@ -7,7 +7,7 @@ using MockQueryable.Moq;
 using Xunit;
 using Moq;
 
-namespace CaseSimulator.UnitTests;
+namespace CaseSimulator.UnitTests.Application.Users;
 
 public class LoginCommandHandlerTests
 {
