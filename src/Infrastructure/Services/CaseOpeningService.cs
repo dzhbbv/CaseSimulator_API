@@ -5,6 +5,8 @@ using CaseSimulator.Application.Interfaces;
 using CaseSimulator.Domain.Entities;
 using CaseSimulator.Domain.Exception;
 
+namespace CaseSimulator.Infrastructure.Services;
+
 public class CaseOpeningService : ICaseOpeningService
 {
     public OpenCaseResult OpenCase(Case caseEntity, User user)
