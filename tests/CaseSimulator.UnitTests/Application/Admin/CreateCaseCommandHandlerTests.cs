@@ -39,8 +39,7 @@ public class CreateCaseCommandHandlerTests
             .Returns(new List<Case> { existingCase }.BuildMockDbSet().Object);
     
         var handler = new CreateCaseCommandHandler(mockDb.Object);
-    
-        // не нужен первый вызов — кейс уже "есть" в моке
+        
         var act = async () => await handler.Handle(
             new CreateCaseCommand("testname", "testurl", 100m),
             CancellationToken.None);
