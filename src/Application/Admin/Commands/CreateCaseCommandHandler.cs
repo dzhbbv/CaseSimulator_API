@@ -12,6 +12,7 @@ public class CreateCaseCommandHandler(IApplicationDbContext dbContext)
 {
     public async Task<Guid> Handle(CreateCaseCommand request, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(request.Name);
         var normalizedName = request.Name.Trim().ToLowerInvariant();
 
         var exists = await dbContext.Cases

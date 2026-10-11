@@ -1,4 +1,5 @@
 using CaseSimulator.Application.Interfaces;
+using CaseSimulator.Domain.Entities;
 using CaseSimulator.Domain.Exception;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +12,6 @@ public class AddItemToCaseCommandHandler(IApplicationDbContext dbContext)
     public async Task Handle(AddItemToCaseCommand request, CancellationToken cancellationToken)
     {
         var caseEntity = await dbContext.Cases
-                             .Include(c => c.CaseContent)
                              .FirstOrDefaultAsync(c => c.Id == request.CaseId, cancellationToken)
                          ?? throw new NotFoundException("Case not found");
 
@@ -19,12 +19,19 @@ public class AddItemToCaseCommandHandler(IApplicationDbContext dbContext)
                        .FirstOrDefaultAsync(i => i.Id == request.CaseItemId, cancellationToken)
                    ?? throw new NotFoundException("Item not found");
 
-        caseEntity.AddItem(item, request.DropChance);
-        
-        var newContentItem = caseEntity.CaseContent.Last();
+        var existingContents = await dbContext.CaseContents
+            .Where(cc => cc.CaseId == request.CaseId)
+            .ToListAsync(cancellationToken);
 
-        await dbContext.CaseContents.AddAsync(newContentItem, cancellationToken);
-        
+        if (existingContents.Any(c => c.CaseItemId == request.CaseItemId))
+            throw new AlreadyExistingException("Item already in case");
+
+        decimal currentTotal = existingContents.Sum(c => c.DropChance);
+        if (currentTotal + request.DropChance > 1.0m)
+            throw new InvalidCaseConfigurationException();
+
+        var newContent = new CaseContent(caseEntity.Id, item.Id, item, request.DropChance);
+        await dbContext.CaseContents.AddAsync(newContent, cancellationToken);
         await dbContext.SaveChangesAsync(cancellationToken);
     }
 }
