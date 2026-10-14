@@ -1,4 +1,5 @@
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using CaseSimulator.Domain.Exception;
 
 namespace CaseSimulator.Api.Middleware;
@@ -42,6 +43,14 @@ public class ExceptionHandlingMiddleware
                     field = x.PropertyName,
                     message = x.ErrorMessage
                 })
+            });
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            context.Response.StatusCode = StatusCodes.Status409Conflict;
+            await context.Response.WriteAsJsonAsync(new
+            {
+                message = "The resource changed during this request. Reload the state and retry if the operation is still needed."
             });
         }
         catch (Exception ex)

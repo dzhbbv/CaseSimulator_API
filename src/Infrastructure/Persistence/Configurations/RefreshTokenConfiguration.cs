@@ -12,7 +12,7 @@ public class RefreshTokenConfiguration : IEntityTypeConfiguration<RefreshToken>
         builder.HasKey(x => x.Id);
         builder.Property(x => x.Token).IsRequired().HasMaxLength(256);
         builder.Property(x => x.ExpiresAt).IsRequired();
-        builder.Property(x => x.IsRevoked).IsRequired();
+        builder.Property(x => x.IsRevoked).IsRequired().IsConcurrencyToken();
         builder.HasIndex(x => x.Token).IsUnique();
         builder.HasIndex(x => x.UserId);
     }

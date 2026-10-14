@@ -1,5 +1,6 @@
 using System.Reflection;
 using CaseSimulator.Application.Interfaces;
+using CaseSimulator.Application.Users;
 using CaseSimulator.Application.Users.Commands;
 using CaseSimulator.Domain.Entities;
 using CaseSimulator.Domain.Exception;
@@ -16,7 +17,7 @@ public class RefreshTokenHandlerTests
 
     private static RefreshToken CreateToken(User user, string token, DateTime? expiresAt = null)
     {
-        var refreshToken = new RefreshToken(user.Id, token, expiresAt ?? DateTime.UtcNow.AddDays(1));
+        var refreshToken = new RefreshToken(user.Id, RefreshTokenHasher.Hash(token), expiresAt ?? DateTime.UtcNow.AddDays(1));
         typeof(RefreshToken).GetProperty(nameof(RefreshToken.User), BindingFlags.Instance | BindingFlags.Public)!
             .SetValue(refreshToken, user);
         return refreshToken;
@@ -40,7 +41,7 @@ public class RefreshTokenHandlerTests
         result.AccessToken.Should().Be("new-access-token");
         result.RefreshToken.Should().Be("new-refresh-token");
         existingToken.IsRevoked.Should().BeTrue();
-        mockDb.Verify(db => db.RefreshTokens.AddAsync(It.Is<RefreshToken>(x => x.Token == "new-refresh-token" && x.UserId == user.Id), It.IsAny<CancellationToken>()), Times.Once);
+        mockDb.Verify(db => db.RefreshTokens.AddAsync(It.Is<RefreshToken>(x => x.Token == RefreshTokenHasher.Hash("new-refresh-token") && x.UserId == user.Id), It.IsAny<CancellationToken>()), Times.Once);
         mockDb.Verify(db => db.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 

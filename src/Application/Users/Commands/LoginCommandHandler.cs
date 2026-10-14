@@ -1,4 +1,5 @@
 using CaseSimulator.Application.Interfaces;
+using CaseSimulator.Application.Users;
 using CaseSimulator.Domain.Entities;
 using CaseSimulator.Domain.Exception;
 using MediatR;
@@ -24,7 +25,7 @@ public class LoginCommandHandler(
 
         var refreshTokenEntity = new RefreshToken(
             user.Id,
-            refreshToken,
+            RefreshTokenHasher.Hash(refreshToken),
             DateTime.UtcNow.AddDays(7));
 
         await dbContext.RefreshTokens.AddAsync(refreshTokenEntity, cancellationToken);

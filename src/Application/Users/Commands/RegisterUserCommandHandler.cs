@@ -3,7 +3,7 @@ using CaseSimulator.Domain.Entities;
 using CaseSimulator.Domain.Exception;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography;
+using CaseSimulator.Domain.Services;
 
 namespace CaseSimulator.Application.Users.Commands;
 
@@ -17,9 +17,8 @@ public class RegisterUserCommandHandler(IApplicationDbContext dbContext, IPasswo
         if (exists)
             throw new AlreadyExistingException("User already exists");
 
-        var serverSeed = Convert.ToHexString(RandomNumberGenerator.GetBytes(32));
-        var serverSeedHash = Convert.ToHexString(
-            SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(serverSeed)));
+        var serverSeed = ProvablyFairAlgorithm.GenerateServerSeed();
+        var serverSeedHash = ProvablyFairAlgorithm.ComputeServerSeedHash(serverSeed);
 
         var user = new User(
             request.Username,

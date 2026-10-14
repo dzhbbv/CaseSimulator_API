@@ -1,6 +1,7 @@
 using CaseSimulator.Application.Interfaces;
-using CaseSimulator.Domain.Exception;
+using CaseSimulator.Application.Users;
 using CaseSimulator.Domain.Entities;
+using CaseSimulator.Domain.Exception;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,26 +13,39 @@ public class RefreshTokenHandler(
 {
     public async Task<AuthResult> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
     {
+        if (string.IsNullOrWhiteSpace(request.RefreshToken))
+            throw new InvalidCredentialsException();
+
+        var tokenHash = RefreshTokenHasher.Hash(request.RefreshToken);
         var existing = await dbContext.RefreshTokens
             .Include(r => r.User)
-            .FirstOrDefaultAsync(r => r.Token == request.RefreshToken, cancellationToken);
+            .FirstOrDefaultAsync(r => r.Token == tokenHash, cancellationToken);
 
         if (existing is null || !existing.IsActive)
             throw new InvalidCredentialsException();
 
         existing.Revoke();
 
-        var newAccessToken = jwtTokenService.GenerateToken(existing.User);
-        var newRefreshToken = jwtTokenService.GenerateRefreshToken();
-
-        var newRefreshTokenEntity = new RefreshToken(
+        var rawRefreshToken = jwtTokenService.GenerateRefreshToken();
+        var accessToken = jwtTokenService.GenerateToken(existing.User);
+        var replacement = new RefreshToken(
             existing.UserId,
-            newRefreshToken,
+            RefreshTokenHasher.Hash(rawRefreshToken),
             DateTime.UtcNow.AddDays(7));
 
-        await dbContext.RefreshTokens.AddAsync(newRefreshTokenEntity, cancellationToken);
-        await dbContext.SaveChangesAsync(cancellationToken);
+        await dbContext.RefreshTokens.AddAsync(replacement, cancellationToken);
 
-        return new AuthResult(newAccessToken, newRefreshToken);
+        try
+        {
+            // SaveChanges is transactional: revoke and replacement commit together.
+            await dbContext.SaveChangesAsync(cancellationToken);
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            // Another request already rotated this token.
+            throw new InvalidCredentialsException();
+        }
+
+        return new AuthResult(accessToken, rawRefreshToken);
     }
 }

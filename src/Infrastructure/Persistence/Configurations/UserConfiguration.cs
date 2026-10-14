@@ -33,16 +33,19 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.Property(x => x.CurrentServerSeedHash)
             .IsRequired()
-            .HasMaxLength(128);
+            .HasMaxLength(128)
+            .IsConcurrencyToken();
 
         builder.Property(x => x.CurrentNonce)
-            .IsRequired();
+            .IsRequired()
+            .IsConcurrencyToken();
 
         builder.OwnsOne(x => x.Balance, balance =>
         {
             balance.Property(b => b.Amount)
                 .HasColumnName("Balance")
-                .IsRequired();
+                .IsRequired()
+                .IsConcurrencyToken();
         });
 
         builder.HasMany(x => x.InventoryItems)

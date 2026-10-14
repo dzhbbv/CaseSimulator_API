@@ -24,7 +24,32 @@ public class User : BaseEntity
     public IReadOnlyCollection<InventoryItem> InventoryItems => _inventoryItems.AsReadOnly();
     public IReadOnlyCollection<SaleItem> SaleHistory => _saleHistory.AsReadOnly();
 
-    public void IncrementNonce() => CurrentNonce++;
+    public void IncrementNonce()
+    {
+        if (CurrentNonce == int.MaxValue)
+            throw new InvalidOperationException("Nonce limit reached. Rotate the server seed before opening another case.");
+        CurrentNonce++;
+    }
+
+    public void SetClientSeed(string clientSeed)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(clientSeed);
+        if (clientSeed.Length > 128)
+            throw new ArgumentOutOfRangeException(nameof(clientSeed), "Client seed cannot exceed 128 characters.");
+        ClientSeed = clientSeed.Trim();
+        CurrentNonce = 0;
+    }
+
+    public void RotateServerSeed(string serverSeed, string serverSeedHash)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(serverSeed);
+        ArgumentException.ThrowIfNullOrWhiteSpace(serverSeedHash);
+        if (serverSeed.Length > 128 || serverSeedHash.Length != 64)
+            throw new ArgumentException("Invalid server seed or commitment length.");
+        CurrentServerSeed = serverSeed;
+        CurrentServerSeedHash = serverSeedHash;
+        CurrentNonce = 0;
+    }
 
     private User()
     {
