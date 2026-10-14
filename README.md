@@ -165,3 +165,24 @@ Open Scalar UI at `http://localhost:5051/scalar` to explore and test the API int
 Aspiring Software Engineer from KCHR 🇷🇺
 - Backend specialist in training
 - Linux enthusiast (Arch / Hyprland)
+
+## Provably Fair protocol (`hmac-sha256-52bit-v1`)
+
+The API exposes authenticated endpoints:
+
+- `GET /api/users/provably-fair/current` — current server-seed commitment, client seed and next nonce. Record the hash before opening a case.
+- `PUT /api/users/provably-fair/client-seed` with `{ "clientSeed": "your-seed" }` — sets a client-controlled seed and resets nonce to zero.
+- `POST /api/users/provably-fair/rotate` — retires the current seed, reveals it, and publishes the hash for a newly generated seed.
+- `GET /api/users/provably-fair/rounds` — last 100 rounds. A server seed is revealed only after its commitment has been retired. `isVerified` is populated for rounds using the current algorithm.
+
+Protocol definition:
+
+1. Generate a 32-byte cryptographically random server seed and encode it as uppercase hex text.
+2. Commitment is `uppercase_hex(SHA256(UTF8(serverSeed)))`.
+3. For a round, calculate `HMAC-SHA256(UTF8(serverSeed), UTF8(clientSeed + ":" + nonce))`.
+4. Take the first 13 hex characters of the digest as an unsigned 52-bit integer and divide by `2^52` to get a roll in `[0, 1)`.
+5. Sort drop-table entries by `CaseItemId` in ordinal GUID `N` format. The first entry whose cumulative probability is greater than the roll wins. Probabilities must sum exactly to `1`.
+6. Each round persists an immutable JSON snapshot of item IDs and drop probabilities so later case edits do not change verification of old rounds.
+7. After a seed is rotated, verify each round by checking the revealed seed against the recorded commitment and re-running the algorithm with its client seed, nonce and saved drop-table snapshot.
+
+Legacy rounds use `legacy-sha256-v0`, have no drop-table snapshot, and cannot be independently verified by the new verifier. The server seed is stored in the application database and must never be returned while its commitment is active. For a production deployment, protect database backups and restrict operator access; consider envelope encryption for seeds at rest.
