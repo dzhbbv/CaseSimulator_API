@@ -32,8 +32,8 @@ public class GetCaseByIdQueryHandlerTests
         result.Price.Should().Be(75m);
         result.ImageUrl.Should().Be("case.png");
         result.Items.Should().HaveCount(2);
-        result.Items.Should().ContainSingle(x => x.Id == firstItem.Id && x.Name == "first item" && x.Price == 10m && x.Rarity == "Rare");
-        result.Items.Should().ContainSingle(x => x.Id == secondItem.Id && x.Name == "second item" && x.Price == 20m && x.Rarity == "Epic");
+        result.Items.Should().ContainSingle(x => x.CaseItemId == firstItem.Id && x.Name == "first item" && x.Price == 10m && x.Rarity == "Rare");
+        result.Items.Should().ContainSingle(x => x.CaseItemId == secondItem.Id && x.Name == "second item" && x.Price == 20m && x.Rarity == "Epic");
     }
 
     [Fact]

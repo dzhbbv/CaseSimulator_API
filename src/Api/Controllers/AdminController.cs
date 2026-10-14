@@ -40,6 +40,22 @@ public class AdminController(IMediator mediator, IConfiguration configuration) :
         return NoContent();
     }
 
+    [HttpDelete("cases/{caseId}/item/{itemId}")]
+    public async Task<IActionResult> RemoveItemFromCase(
+        [FromRoute] Guid caseId,
+        [FromRoute] Guid itemId,
+        CancellationToken cancellationToken)
+    {
+        if (!IsAdmin())
+            return Forbid();
+
+        await mediator.Send(
+            new RemoveItemFromCaseCommand(caseId, itemId),
+            cancellationToken);
+
+        return NoContent();
+    }
+    
     [HttpDelete("items/{id}")]
     public async Task<IActionResult> DeleteCaseItem([FromRoute] Guid id, CancellationToken cancellationToken)
     {

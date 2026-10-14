@@ -8,7 +8,7 @@ public class CaseDetailDto
     public string Name { get; protected set; }
     public decimal Price { get; protected set; }
     public string ImageUrl { get; protected set; }
-    public List<CaseItemDto> Items { get; protected set; }
+    public List<CaseContentDto> Items { get; protected set; }
 
     public CaseDetailDto(Case caseEntity)
     {
@@ -16,24 +16,26 @@ public class CaseDetailDto
         Name = caseEntity.Name;
         Price = caseEntity.Price.Amount;
         ImageUrl = caseEntity.ImageUrl;
-        Items = caseEntity.CaseContent.Select(c => new CaseItemDto(c.CaseItem)).ToList(); 
+        Items = caseEntity.CaseContent.Select(c => new CaseContentDto(c)).ToList(); 
     }
 
-    public class CaseItemDto
+    public class CaseContentDto
     {
-        public Guid Id { get; protected set; }
+        public Guid CaseItemId { get; protected set; }
         public string Name { get; protected set; }
         public decimal Price { get; protected set; }
         public string ImageUrl { get; protected set; }
         public string Rarity { get; protected set; }
+        public decimal DropChance { get; protected set; }
         
-        public CaseItemDto(CaseItem caseItem)
+        public CaseContentDto(CaseContent content)
         {
-            Id = caseItem.Id;
-            Name = caseItem.Name;
-            Price = caseItem.Price.Amount;
-            ImageUrl = caseItem.ImageUrl;
-            Rarity =  caseItem.Rarity.Name;
+            CaseItemId = content.CaseItemId;
+            Name = content.CaseItem.Name;
+            Price = content.CaseItem.Price.Amount;
+            ImageUrl = content.CaseItem.ImageUrl;
+            Rarity =  content.CaseItem.Rarity.Name;
+            DropChance = content.DropChance;
         }
     }
 }
