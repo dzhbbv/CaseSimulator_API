@@ -1,6 +1,7 @@
 using CaseSimulator.Domain.Entities;
 using CaseSimulator.Domain.ValueObjects;
 using CaseSimulator.Infrastructure.Services;
+using CaseSimulator.Domain.Services;
 using Xunit;
 using FluentAssertions;
 
@@ -8,9 +9,12 @@ namespace CaseSimulator.UnitTests.Infrastructure;
 
 public class CaseOpeningServiceTests
 {
-    private static User CreateUser() => new User(
-        "testuser", "hash", "test@mail.com",
-        "clientseed", "serverseed123", "serverhash");
+    private static User CreateUser()
+    {
+        const string seed = "serverseed123";
+        return new User("testuser", "hash", "test@mail.com", "clientseed", seed,
+            ProvablyFairAlgorithm.ComputeServerSeedHash(seed));
+    }
 
     private static Case CreateConfiguredCase()
     {
@@ -81,7 +85,7 @@ public class CaseOpeningServiceTests
                 $"user{i}@mail.com",
                 "client" + i,
                 "server" + i,
-                "hash" + i);
+                ProvablyFairAlgorithm.ComputeServerSeedHash("server" + i));
 
             var result = service.OpenCase(caseEntity, user);
 

@@ -27,6 +27,14 @@ public class ProvablyFairRoundConfiguration : IEntityTypeConfiguration<ProvablyF
         builder.Property(x => x.Nonce)
             .IsRequired();
 
+        builder.Property(x => x.DropTableJson)
+            .IsRequired()
+            .HasColumnType("jsonb");
+
+        builder.Property(x => x.Algorithm)
+            .IsRequired()
+            .HasMaxLength(64);
+
         builder.HasIndex(x => x.UserId);
 
         builder.HasIndex(x => x.CaseId);

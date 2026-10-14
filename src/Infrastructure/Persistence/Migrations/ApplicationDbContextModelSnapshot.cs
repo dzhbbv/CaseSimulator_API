@@ -144,6 +144,11 @@ namespace CaseSimulator.Infrastructure.Persistence.Migrations
                     b.Property<Guid>("CaseItemId")
                         .HasColumnType("uuid");
 
+                    b.Property<string>("Algorithm")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
                     b.Property<string>("ClientSeed")
                         .IsRequired()
                         .HasMaxLength(128)
@@ -154,6 +159,10 @@ namespace CaseSimulator.Infrastructure.Persistence.Migrations
 
                     b.Property<int>("Nonce")
                         .HasColumnType("integer");
+
+                    b.Property<string>("DropTableJson")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
 
                     b.Property<string>("ServerSeed")
                         .IsRequired()
@@ -275,6 +284,7 @@ namespace CaseSimulator.Infrastructure.Persistence.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("CurrentNonce")
+                        .IsConcurrencyToken()
                         .HasColumnType("integer");
 
                     b.Property<string>("CurrentServerSeed")
@@ -283,6 +293,7 @@ namespace CaseSimulator.Infrastructure.Persistence.Migrations
                         .HasColumnType("character varying(128)");
 
                     b.Property<string>("CurrentServerSeedHash")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasMaxLength(128)
                         .HasColumnType("character varying(128)");
@@ -509,6 +520,7 @@ namespace CaseSimulator.Infrastructure.Persistence.Migrations
                                 .HasColumnType("uuid");
 
                             b1.Property<decimal>("Amount")
+                                .IsConcurrencyToken()
                                 .HasColumnType("numeric")
                                 .HasColumnName("Balance");
 
