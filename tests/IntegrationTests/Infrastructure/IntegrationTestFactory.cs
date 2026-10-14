@@ -23,8 +23,7 @@ public sealed class IntegrationTestFactory : WebApplicationFactory<Program>, IAs
     public async Task InitializeAsync()
     {
         await _postgres.StartAsync();
-
-        // Force host startup, then create the schema in the isolated test database.
+        
         using var client = CreateClient();
         using var scope = Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();

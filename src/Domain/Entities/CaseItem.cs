@@ -12,6 +12,16 @@ public class CaseItem : BaseEntity
 
     private CaseItem() { }
     
+    public void Update(string name, string imageUrl, Rarity rarity, Money price)
+    {
+        ArgumentNullException.ThrowIfNull(name);
+        ArgumentNullException.ThrowIfNull(imageUrl);
+        Name = name.Trim().ToLowerInvariant();
+        ImageUrl = imageUrl;
+        Rarity = rarity;
+        Price = price;
+    }
+    
     public CaseItem(string name, string imageUrl, Rarity rarity, Money price)
     {
         ArgumentNullException.ThrowIfNull(name);

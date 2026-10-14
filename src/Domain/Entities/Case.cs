@@ -22,6 +22,15 @@ public class Case : BaseEntity
         ImageUrl = imageUrl;
         Price = price;
     }
+
+    public void Update(string name, string imageUrl, Money price)
+    {
+        ArgumentNullException.ThrowIfNull(name);
+        ArgumentNullException.ThrowIfNull(imageUrl);
+        Name = name.Trim().ToLowerInvariant();
+        ImageUrl = imageUrl;
+        Price = price;
+    }
     
     public void AddItem(CaseItem item, decimal dropChance)
     {
