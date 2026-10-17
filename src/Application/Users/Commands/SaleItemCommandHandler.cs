@@ -8,31 +8,47 @@ namespace CaseSimulator.Application.Users.Commands;
 
 public class SaleItemCommandHandler(
     IApplicationDbContext dbContext,
-    ICurrentUserService usr ) : IRequestHandler<SaleItemCommand, Transaction>
+    ICurrentUserService usr) : IRequestHandler<SaleItemCommand, Transaction>
 {
+    private const int MaxRetries = 3;
+
     public async Task<Transaction> Handle(SaleItemCommand request, CancellationToken cancellationToken)
     {
+        for (int attempt = 0; attempt < MaxRetries; attempt++)
+        {
+            try
+            {
+                return await TryHandle(request, cancellationToken);
+            }
+            catch (DbUpdateConcurrencyException ex) when (attempt < MaxRetries - 1)
+            {
+                foreach (var entry in ex.Entries)
+                    await entry.ReloadAsync(cancellationToken);
+            }
+        }
+
+        throw new DbUpdateConcurrencyException("Concurrent sell-item conflict after retries.");
+    }
+
+    private async Task<Transaction> TryHandle(SaleItemCommand request, CancellationToken cancellationToken)
+    {
         var user = await dbContext.Users
-            .Include(x => x.Transactions) 
+            .Include(x => x.Transactions)
             .Include(x => x.SaleHistory)
             .Include(x => x.InventoryItems)
-            .ThenInclude(x => x.CaseItem)
-            .FirstOrDefaultAsync(x => x.Id == usr.UserId, cancellationToken);
-        
-        if (user is null) throw new NotFoundException("User not found");
+                .ThenInclude(x => x.CaseItem)
+            .FirstOrDefaultAsync(x => x.Id == usr.UserId, cancellationToken)
+            ?? throw new NotFoundException("User not found");
 
-        var item = user.InventoryItems.FirstOrDefault(x => x.Id == request.ItemId);
-        
-        if (item is null) throw new NotFoundException("Item not found");
-        
+        var item = user.InventoryItems.FirstOrDefault(x => x.Id == request.ItemId)
+            ?? throw new NotFoundException("Item not found");
+
         user.SellItem(item);
-        var newSaleHistory = user.SaleHistory.Last();
-        var newTransaction = user.Transactions.Last(); 
-        await dbContext.Transactions.AddAsync(newTransaction, cancellationToken);
-        await dbContext.SaleItems.AddAsync(newSaleHistory, cancellationToken);
         
+        dbContext.InventoryItems.Remove(item);
+
         await dbContext.SaveChangesAsync(cancellationToken);
-        
-        return newTransaction;
+
+        return user.Transactions.Last();
     }
 }

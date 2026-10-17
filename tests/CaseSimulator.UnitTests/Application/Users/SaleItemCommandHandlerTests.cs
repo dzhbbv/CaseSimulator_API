@@ -28,6 +28,7 @@ public class SaleItemCommandHandlerTests
         mockDb.Setup(db => db.Users).Returns(users.BuildMockDbSet().Object);
         mockDb.Setup(db => db.Transactions).Returns(new List<Transaction>().BuildMockDbSet().Object);
         mockDb.Setup(db => db.SaleItems).Returns(new List<SaleItem>().BuildMockDbSet().Object);
+        mockDb.Setup(db => db.InventoryItems).Returns(new List<InventoryItem>().BuildMockDbSet().Object);
         mockDb.Setup(db => db.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(1);
         return mockDb;
     }
@@ -48,8 +49,6 @@ public class SaleItemCommandHandlerTests
         user.Balance.Amount.Should().Be(175m);
         user.InventoryItems.Should().BeEmpty();
         user.SaleHistory.Should().ContainSingle(x => x.CaseItemId == inventoryItem.CaseItemId && x.Price.Amount == 75m);
-        mockDb.Verify(db => db.Transactions.AddAsync(It.IsAny<Transaction>(), It.IsAny<CancellationToken>()), Times.Once);
-        mockDb.Verify(db => db.SaleItems.AddAsync(It.IsAny<SaleItem>(), It.IsAny<CancellationToken>()), Times.Once);
         mockDb.Verify(db => db.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 

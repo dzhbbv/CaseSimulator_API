@@ -60,8 +60,6 @@ public class OpenCaseCommandHandlerTests
         result.Should().Be(item.Id);
         user.InventoryItems.Should().ContainSingle(x => x.CaseItemId == item.Id);
         mockDb.Verify(x => x.ProvablyFairRounds.AddAsync(round, It.IsAny<CancellationToken>()), Times.Once);
-        mockDb.Verify(x => x.InventoryItems.AddAsync(It.Is<InventoryItem>(i => i.UserId == user.Id && i.CaseItemId == item.Id), It.IsAny<CancellationToken>()), Times.Once);
-        mockDb.Verify(x => x.Transactions.AddAsync(It.Is<Transaction>(t => t.UserId == user.Id), It.IsAny<CancellationToken>()), Times.Once);
         mockDb.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 

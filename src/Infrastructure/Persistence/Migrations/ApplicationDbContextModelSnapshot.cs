@@ -185,6 +185,9 @@ namespace CaseSimulator.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
+                    b.HasIndex("UserId", "ServerSeedHash", "Nonce")
+                        .IsUnique();
+
                     b.ToTable("ProvablyFairRounds", (string)null);
                 });
 

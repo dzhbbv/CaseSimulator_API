@@ -40,5 +40,10 @@ public class ProvablyFairRoundConfiguration : IEntityTypeConfiguration<ProvablyF
         builder.HasIndex(x => x.CaseId);
 
         builder.HasIndex(x => x.ServerSeedHash);
+
+        // A user must never persist two rounds with the same nonce under the same seed commitment.
+        // This is the database-level backstop for concurrent case-opening requests.
+        builder.HasIndex(x => new { x.UserId, x.ServerSeedHash, x.Nonce })
+            .IsUnique();
     }
 }
